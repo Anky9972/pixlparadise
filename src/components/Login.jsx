@@ -4,7 +4,7 @@ import { ThreeDots } from "react-loader-spinner";
 import ForgotPassword from "../pages/ForgotPassword";
 import { FaApple, FaEye, FaEyeSlash, FaTwitter } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 const Login = ({ handleClose }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,22 +34,37 @@ const Login = ({ handleClose }) => {
   };
 
   useEffect(() => {
-    google.accounts.id.initialize({
-      client_id:
-        "816329215835-l1uhp8md0irt9muio9qshn2ssqoea843.apps.googleusercontent.com",
-      callback: handleCallbackResponse,
-    });
-    google.accounts.id.renderButton(
-      document.getElementById("google-signin"),
-      {
-        type: "standard",
-        theme: "outline",
-        size: "large",
-        text: "signin_with",
-        shape: "pill",
-        logo_alignment: "center",
+    const initializeGoogleSignIn = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id:
+            "816329215835-l1uhp8md0irt9muio9qshn2ssqoea843.apps.googleusercontent.com",
+          callback: handleCallbackResponse,
+        });
+        window.google.accounts.id.renderButton(
+          document.getElementById("google-signin"),
+          {
+            type: "standard",
+            theme: "outline",
+            size: "large",
+            text: "signin_with",
+            shape: "pill",
+            logo_alignment: "center",
+          }
+        );
       }
-    );
+    };
+
+    if (window.google) {
+      initializeGoogleSignIn();
+    } else {
+      const intervalId = setInterval(() => {
+        if (window.google) {
+          initializeGoogleSignIn();
+          clearInterval(intervalId);
+        }
+      }, 100);
+    }
   }, []);
 
   return (

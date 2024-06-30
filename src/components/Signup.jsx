@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { Auth } from "../context/Auth";
 import { ThreeDots } from "react-loader-spinner";
 import { FaApple, FaEye, FaEyeSlash, FaTwitter } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import {jwtDecode} from "jwt-decode";
+import {jwtDecode} from "jwt-decode"; // Correct import for jwtDecode
 import { IoMdCloseCircle } from "react-icons/io";
+
 function Signup({ handleClose }) {
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -17,6 +17,7 @@ function Signup({ handleClose }) {
     loading,
     handleGoogleSignup,
   } = useContext(Auth);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -24,7 +25,6 @@ function Signup({ handleClose }) {
       [name]: value,
     }));
   };
-
 
   const handleCallbackResponse = (response) => {
     console.log("Encoded JWT ID token: " + response.credential);
@@ -35,30 +35,47 @@ function Signup({ handleClose }) {
   };
 
   useEffect(() => {
+    const initializeGoogleSignIn = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id:
+            "816329215835-l1uhp8md0irt9muio9qshn2ssqoea843.apps.googleusercontent.com",
+          callback: handleCallbackResponse,
+        });
+        window.google.accounts.id.renderButton(
+          document.getElementById("google-signup"),
+          {
+            type: "standard",
+            theme: "outline",
+            size: "large",
+            text: "signup_with",
+            shape: "pill",
+            logo_alignment: "center",
+          }
+        );
+      }
+    };
+
     if (window.google) {
-      google.accounts.id.initialize({
-        client_id: "816329215835-l1uhp8md0irt9muio9qshn2ssqoea843.apps.googleusercontent.com",
-        callback: handleCallbackResponse,
-      });
-      google.accounts.id.renderButton(document.getElementById("google-signup"), {
-        type: "standard",
-        theme: "outline",
-        size: "large",
-        text: "signup_with",
-        shape: "pill",
-        logo_alignment: "center",
-      });
+      initializeGoogleSignIn();
+    } else {
+      const intervalId = setInterval(() => {
+        if (window.google) {
+          initializeGoogleSignIn();
+          clearInterval(intervalId);
+        }
+      }, 100);
     }
   }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen ">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="bg-white px-8 py-6 rounded-3xl shadow-md w-full max-w-md md:max-w-xl xl:max-w-md md:py-12 lg:max-w-2xl lg:py-10 xl:py-6 relative">
         <span
           onClick={() => handleClose()}
           className="hover:cursor-pointer absolute top-4 right-4 text-slate-400 hover:text-red-400"
         >
-          <IoMdCloseCircle className="text-2xl " />
+          <IoMdCloseCircle className="text-2xl" />
         </span>
         <div className="text-center mb-6 md:mb-12 lg:mb-16 xl:mb-6">
           <img
@@ -78,7 +95,7 @@ function Signup({ handleClose }) {
             <span className="sr-only">Sign in with Apple</span>
             <FaApple />
           </button>
-            <div id="google-signup" className="flex justify-center items-center"></div>
+          <div id="google-signup" className="flex justify-center items-center"></div>
           <button className="w-10 md:w-28 h-10 lg:w-36 lg:h-16 xl:w-28 xl:h-10 bg-blue-500 text-white rounded-full flex items-center justify-center">
             <span className="sr-only">Sign in with Twitter</span>
             <FaTwitter />
@@ -89,15 +106,8 @@ function Signup({ handleClose }) {
           <span className="px-3 font-medium text-slate-500">OR</span>
           <div className="h-[0.8px] w-1/2 bg-slate-300"></div>
         </div>
-        <form
-          onSubmit={(e) => {
-            handleSignup(e);
-          }}
-        >
+        <form onSubmit={(e) => handleSignup(e)}>
           <div className="mb-4 md:mb-8 lg:mb-12 xl:mb-4">
-            {/* <label className="block text-gray-700 mb-2" htmlFor="name">
-          Full Name
-        </label> */}
             <input
               type="text"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -110,9 +120,6 @@ function Signup({ handleClose }) {
             />
           </div>
           <div className="mb-6 md:mb-12 lg:mb-16 xl:mb-6">
-            {/* <label className="block text-gray-700 mb-2" htmlFor="confirm-password">
-          Confirm Password
-        </label> */}
             <input
               type="text"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -125,9 +132,6 @@ function Signup({ handleClose }) {
             />
           </div>
           <div className="mb-4 md:mb-8 lg:mb-12 xl:mb-4">
-            {/* <label className="block text-gray-700 mb-2" htmlFor="email">
-          E-Mail Address
-        </label> */}
             <input
               type="email"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"

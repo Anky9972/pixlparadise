@@ -1,9 +1,9 @@
-import { useAnimation, useInView, motion, delay } from 'framer-motion';
+import { useAnimation, useInView, motion } from 'framer-motion';
 import React, { useEffect, useRef } from 'react';
 
 function Features({ mode, darkModeColors, lightModeColors }) {
-  const { background: darkBg, text: darkText, featureBg: darkFeatureBg, featureText: darkFeatureText } = darkModeColors;
-  const { background: lightBg, text: lightText, featureBg: lightFeatureBg, featureText: lightFeatureText } = lightModeColors;
+  const { background: darkBg, featureBg: darkFeatureBg, featureText: darkFeatureText } = darkModeColors;
+  const { background: lightBg, featureBg: lightFeatureBg, featureText: lightFeatureText } = lightModeColors;
   const controls = useAnimation();
   const ref = useRef(null);
   const inView = useInView(ref, { triggerOnce: true });

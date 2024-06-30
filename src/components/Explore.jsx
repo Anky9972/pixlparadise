@@ -14,7 +14,6 @@ import { Link } from "react-router-dom";
 import { Auth } from "../context/Auth";
 import toast from "react-hot-toast";
 import { IoIosArrowDown, IoIosArrowUp, IoMdCloseCircle } from "react-icons/io";
-import { FaMinus, FaPlus } from "react-icons/fa";
 import { RxMixerHorizontal } from "react-icons/rx";
 const debounce = (func, wait) => {
   let timeout;
@@ -482,6 +481,7 @@ const Explore = ({ mode }) => {
                         <img
                           src={image.user.profile_image.small}
                           className="w-10 h-10 rounded-full bg-slate-800 bg-contain"
+                          alt="profile"
                         ></img>
                       </Link>
                     </p>
